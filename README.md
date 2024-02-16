@@ -1,5 +1,7 @@
 # dlsite-doujin-renamer
-![软件截图](screenshot.png)
+修改自 [yodhcn/dlsite-doujin-renamer](https://github.com/yodhcn/dlsite-doujin-renamer)，用于在 Linux 环境下添加封面图，同时不修改文件夹原始名称。
+
+改得很粗暴，能用就行（
 
 ## Features
 - 支持深度查找带有 RJ 号的文件夹
@@ -11,23 +13,23 @@
 示例配置
 ```json
 {
-  "scaner_max_depth": 5,
+  "scaner_max_depth": 2,
   "scraper_locale": "zh_cn",
   "scraper_connect_timeout": 10,
   "scraper_read_timeout": 10,
   "scraper_sleep_interval": 3,
   "scraper_http_proxy": null,
-  "renamer_template": "[maker_name][rjcode] work_name cv_list_str",
+  "renamer_template": "work_name [rjcode]",
   "renamer_release_date_format": "%y%m%d",
   "renamer_exclude_square_brackets_in_work_name_flag": false,
   "renamer_illegal_character_to_full_width_flag": false,
   "renamer_delimiter": " ",
   "renamer_tags_max_number": 5,
-  "renamer_tags_ordered_list": [
-    "标签1",
-    ["标签2","替换2"],
-    "标签3"
-  ]
+  "cv_list_left": "",
+  "cv_list_right": "",
+  "make_folder_icon": true,
+  "remove_jpg_file": false,
+  "renamer_tags_ordered_list": ["标签1", ["标签2", "替换2"], "标签3"]
 }
 ```
 - ```scaner_max_depth``` 扫描器的扫描深度

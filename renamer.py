@@ -11,7 +11,7 @@ from scraper import WorkMetadata, Scraper
 
 import stat
 
-import win32api
+# import win32api
 # Windows 系统的保留字符
 # https://docs.microsoft.com/zh-cn/windows/win32/fileio/naming-a-file
 # <（小于）
@@ -43,6 +43,8 @@ def _get_logger():
 
     # add ch to logger
     logger.addHandler(ch)
+
+    logger.propagate = False
 
     return logger
 
@@ -167,6 +169,7 @@ class Renamer(object):
                     Renamer.logger.error(f'[{rjcode}] -> 修改封面失败[OSError]：{str(err)}\n')
                     continue
 
+            """
             # 重命名文件夹
             new_basename = self.__compile_new_name(metadata)
             new_folder_path = os.path.join(dirname, new_basename)
@@ -179,12 +182,14 @@ class Renamer(object):
                 Renamer.logger.warning(f'[{rjcode}] -> 重命名失败[FileExistsError]：{err.strerror}："{filename}" -> "{filename2}"\n')
             except OSError as err:
                 Renamer.logger.error(f'[{rjcode}] -> 重命名失败[OSError]：{str(err)}\n')
+            """
 
     # 修改文件夹封面
     def changeIcon(self, rjcode: str, cover_url: str, icon_dir: str):
-        os.chmod(icon_dir, stat.S_IREAD)
+        os.chmod(icon_dir, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
         icon_name, jpg_name = self.__scraper.scrape_icon(rjcode, cover_url, icon_dir)
 
+        """
         ini_file_path = Path(os.path.join(icon_dir, "desktop.ini"))
         if not os.path.exists(ini_file_path):
             # 编写 desktop.ini
@@ -199,8 +204,8 @@ class Renamer(object):
                 inifile.close()
 
             # 隐藏 desktop.ini 文件 & .ico 文件
-            win32api.SetFileAttributes(str(ini_file_path), 38)
-            win32api.SetFileAttributes(os.path.join(icon_dir, icon_name), 38)
+            # win32api.SetFileAttributes(str(ini_file_path), 38)
+            # win32api.SetFileAttributes(os.path.join(icon_dir, icon_name), 38)
             # cmd1 = icon_dir[0:2]
             # cmd2 = "cd " + '\"' + icon_dir + '\"'
             # cmd3 = "attrib +h +s " + 'desktop.ini'
@@ -208,10 +213,14 @@ class Renamer(object):
             # cmd = cmd1 + " & " + cmd2 + " & " + cmd3 + " & " + cmd4
             # os.system(cmd)  # 运行 cmd
             Renamer.logger.info(f'[{rjcode}] -> 修改封面成功："{icon_name}"')
+        """
 
         if self.__remove_jpg_file:
             # 删除 .jpg 文件
             jpg_path = Path(os.path.join(icon_dir, jpg_name))
             jpg_path.unlink(missing_ok=True)
+
+        icon_path = Path(os.path.join(icon_dir, icon_name))
+        icon_path.unlink(missing_ok=True)
 
         return icon_name, jpg_name
